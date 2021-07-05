@@ -1,10 +1,13 @@
 {
-    "name": "sound-level",
+    "name": "robot-car-v1",
     "description": "",
     "dependencies": {
         "core": "*",
         "radio": "*",
-        "microphone": "*"
+        "microphone": "*",
+        "pxt-robotcar": "github:veilkrand/pxt-robotcar#v0.0.14",
+        "MakerBit-IR-Receiver": "github:1010technologies/pxt-makerbit-ir-receiver#v1.5.3",
+        "neopixel": "github:microsoft/pxt-neopixel#v0.7.3"
     },
     "files": [
         "main.ts",
