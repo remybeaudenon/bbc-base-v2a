@@ -1,5 +1,5 @@
 function suivi_ligne (cmd: string) {
-    if (cmd == "on") {
+    if (cmd == "on" && !(RobotCar_Keyestudio.IrSensors.isLeftBlocked() && RobotCar_Keyestudio.IrSensors.isRightBlocked())) {
         if (pins.digitalReadPin(DigitalPin.P12) != pins.digitalReadPin(DigitalPin.P13)) {
             if (pins.digitalReadPin(DigitalPin.P12) == 1) {
                 moteurs(1, 40)
@@ -7,15 +7,15 @@ function suivi_ligne (cmd: string) {
                 moteurs(-1, 40)
             }
             phares("orange")
-            neopixels("orange")
+            neo_LED("orange")
         } else if (pins.digitalReadPin(DigitalPin.P12) == 0) {
             moteurs(0, -20)
             phares("red")
-            neopixels("red")
+            neo_LED("red")
         } else {
             moteurs(0, 30)
             phares("white")
-            neopixels("arc")
+            neo_LED("arc")
         }
     } else {
         RobotCar_Keyestudio.Motors.stop()
@@ -43,6 +43,17 @@ function phares (cmd: string) {
         phares_cmd = cmd
     }
 }
+function neo_LED (cmd: string) {
+    if (RobotCar_Keyestudio.IrSensors.isLeftBlocked() && RobotCar_Keyestudio.IrSensors.isRightBlocked()) {
+        neopixels("red")
+    } else if (RobotCar_Keyestudio.IrSensors.isLeftBlocked()) {
+        neopixels("left")
+    } else if (RobotCar_Keyestudio.IrSensors.isRightBlocked()) {
+        neopixels("right")
+    } else {
+        neopixels(cmd)
+    }
+}
 function neopixels (cmd: string) {
     if (neopixel_cmd != cmd) {
         if (cmd == "white") {
@@ -58,11 +69,13 @@ function neopixels (cmd: string) {
         } else if (cmd == "arc") {
             neopixel2.showRainbow(1, 360)
         } else if (cmd == "right") {
+            neopixel2.showColor(neopixel.colors(NeoPixelColors.Black))
             neopixel2.setPixelColor(5, neopixel.colors(NeoPixelColors.Red))
             neopixel2.setPixelColor(6, neopixel.colors(NeoPixelColors.Red))
             neopixel2.setPixelColor(7, neopixel.colors(NeoPixelColors.Red))
             neopixel2.show()
         } else if (cmd == "left") {
+            neopixel2.showColor(neopixel.colors(NeoPixelColors.Black))
             neopixel2.setPixelColor(10, neopixel.colors(NeoPixelColors.Red))
             neopixel2.setPixelColor(11, neopixel.colors(NeoPixelColors.Red))
             neopixel2.setPixelColor(12, neopixel.colors(NeoPixelColors.Red))
@@ -81,13 +94,6 @@ function moteurs (sens_1_1: number, vitesse_: number) {
     }
     RobotCar_Keyestudio.Motors.steer(vitesse_, 275 * sens_1_1)
 }
-function obstacles_détection () {
-    if (RobotCar_Keyestudio.IrSensors.isRightBlocked()) {
-        neopixels("right")
-    } else if (RobotCar_Keyestudio.IrSensors.isLeftBlocked()) {
-        neopixels("left")
-    }
-}
 makerbit.onIrDatagram(function () {
     if (makerbit.irButton() == makerbit.irButtonCode(IrButton.Number_1)) {
         phares("on")
@@ -98,6 +104,9 @@ makerbit.onIrDatagram(function () {
     } else if (makerbit.irButton() == makerbit.irButtonCode(IrButton.Ok)) {
         if (run_cmd == "on") {
             run_cmd = "off"
+            RobotCar_Keyestudio.Motors.stop()
+            phares("off")
+            neo_LED("off")
         } else {
             run_cmd = "on"
         }
