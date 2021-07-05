@@ -1,26 +1,3 @@
-function suivi_ligne (cmd: string) {
-    if (cmd == "on" && !(RobotCar_Keyestudio.IrSensors.isLeftBlocked() && RobotCar_Keyestudio.IrSensors.isRightBlocked())) {
-        if (pins.digitalReadPin(DigitalPin.P12) != pins.digitalReadPin(DigitalPin.P13)) {
-            if (pins.digitalReadPin(DigitalPin.P12) == 1) {
-                moteurs(1, 40)
-            } else if (pins.digitalReadPin(DigitalPin.P13) == 1) {
-                moteurs(-1, 40)
-            }
-            phares("orange")
-            neo_LED("orange")
-        } else if (pins.digitalReadPin(DigitalPin.P12) == 0) {
-            moteurs(0, -20)
-            phares("red")
-            neo_LED("red")
-        } else {
-            moteurs(0, 30)
-            phares("white")
-            neo_LED("arc")
-        }
-    } else {
-        RobotCar_Keyestudio.Motors.stop()
-    }
-}
 function phares (cmd: string) {
     if (phares_cmd != cmd) {
         if (cmd == "white") {
@@ -41,17 +18,6 @@ function phares (cmd: string) {
         	
         }
         phares_cmd = cmd
-    }
-}
-function neo_LED (cmd: string) {
-    if (RobotCar_Keyestudio.IrSensors.isLeftBlocked() && RobotCar_Keyestudio.IrSensors.isRightBlocked()) {
-        neopixels("red")
-    } else if (RobotCar_Keyestudio.IrSensors.isLeftBlocked()) {
-        neopixels("left")
-    } else if (RobotCar_Keyestudio.IrSensors.isRightBlocked()) {
-        neopixels("right")
-    } else {
-        neopixels(cmd)
     }
 }
 function neopixels (cmd: string) {
@@ -88,11 +54,45 @@ function neopixels (cmd: string) {
         neopixel_cmd = cmd
     }
 }
+function neo_LED (cmd: string) {
+    if (RobotCar_Keyestudio.IrSensors.isLeftBlocked() && RobotCar_Keyestudio.IrSensors.isRightBlocked()) {
+        neopixels("red")
+    } else if (RobotCar_Keyestudio.IrSensors.isLeftBlocked()) {
+        neopixels("left")
+    } else if (RobotCar_Keyestudio.IrSensors.isRightBlocked()) {
+        neopixels("right")
+    } else {
+        neopixels(cmd)
+    }
+}
 function moteurs (sens_1_1: number, vitesse_: number) {
     if (vitesse_ < 0) {
         music.playTone(262, music.beat(BeatFraction.Whole))
     }
     RobotCar_Keyestudio.Motors.steer(vitesse_, 275 * sens_1_1)
+}
+function suivi_ligne (cmd: string) {
+    if (cmd == "on" && !(RobotCar_Keyestudio.IrSensors.isLeftBlocked() && RobotCar_Keyestudio.IrSensors.isRightBlocked())) {
+        if (pins.digitalReadPin(DigitalPin.P12) != pins.digitalReadPin(DigitalPin.P13)) {
+            if (pins.digitalReadPin(DigitalPin.P12) == 1) {
+                moteurs(1, 40)
+            } else if (pins.digitalReadPin(DigitalPin.P13) == 1) {
+                moteurs(-1, 40)
+            }
+            phares("orange")
+            neo_LED("orange")
+        } else if (pins.digitalReadPin(DigitalPin.P12) == 0) {
+            moteurs(0, -20)
+            phares("red")
+            neo_LED("red")
+        } else {
+            moteurs(0, 30)
+            phares("white")
+            neo_LED("arc")
+        }
+    } else {
+        RobotCar_Keyestudio.Motors.stop()
+    }
 }
 makerbit.onIrDatagram(function () {
     if (makerbit.irButton() == makerbit.irButtonCode(IrButton.Number_1)) {
@@ -127,4 +127,5 @@ music.setBuiltInSpeakerEnabled(false)
 soundExpression.happy.playUntilDone()
 basic.forever(function () {
     suivi_ligne(run_cmd)
+    basic.showNumber(RobotCar_Keyestudio.Sonar.ping())
 })
