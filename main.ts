@@ -66,10 +66,15 @@ function neo_LED (cmd: string) {
     }
 }
 function moteurs (sens_1_1: number, vitesse_: number) {
-    if (vitesse_ < 0) {
-        music.playTone(262, music.beat(BeatFraction.Whole))
+    if (RobotCar_Keyestudio.Sonar.ping() < 60) {
+        RobotCar_Keyestudio.Motors.stop()
+        music.playTone(659, music.beat(BeatFraction.Whole))
+    } else {
+        if (vitesse_ < 0) {
+            music.playTone(262, music.beat(BeatFraction.Whole))
+        }
+        RobotCar_Keyestudio.Motors.steer(vitesse_, 275 * sens_1_1)
     }
-    RobotCar_Keyestudio.Motors.steer(vitesse_, 275 * sens_1_1)
 }
 function suivi_ligne (cmd: string) {
     if (cmd == "on" && !(RobotCar_Keyestudio.IrSensors.isLeftBlocked() && RobotCar_Keyestudio.IrSensors.isRightBlocked())) {
@@ -79,12 +84,12 @@ function suivi_ligne (cmd: string) {
             } else if (pins.digitalReadPin(DigitalPin.P13) == 1) {
                 moteurs(-1, 40)
             }
-            phares("orange")
-            neo_LED("orange")
+            phares("blue")
+            neo_LED("blue")
         } else if (pins.digitalReadPin(DigitalPin.P12) == 0) {
             moteurs(0, -20)
-            phares("red")
-            neo_LED("red")
+            phares("orange")
+            neo_LED("orange")
         } else {
             moteurs(0, 30)
             phares("white")
@@ -92,6 +97,8 @@ function suivi_ligne (cmd: string) {
         }
     } else {
         RobotCar_Keyestudio.Motors.stop()
+        neo_LED("red")
+        phares("red")
     }
 }
 makerbit.onIrDatagram(function () {
@@ -102,11 +109,8 @@ makerbit.onIrDatagram(function () {
     } else if (makerbit.irButton() == makerbit.irButtonCode(IrButton.Number_5)) {
         music.playTone(262, music.beat(BeatFraction.Whole))
     } else if (makerbit.irButton() == makerbit.irButtonCode(IrButton.Ok)) {
-        if (run_cmd == "on") {
+        if (run_cmd != "off") {
             run_cmd = "off"
-            RobotCar_Keyestudio.Motors.stop()
-            phares("off")
-            neo_LED("off")
         } else {
             run_cmd = "on"
         }
@@ -121,11 +125,11 @@ neopixel2 = neopixel.create(DigitalPin.P5, 18, NeoPixelMode.RGB)
 neopixel_cmd = ""
 phares_cmd = ""
 run_cmd = "off"
+let sonar2 = RobotCar_Keyestudio.Sonar.ping()
 neopixels("arc")
 phares("off")
 music.setBuiltInSpeakerEnabled(false)
 soundExpression.happy.playUntilDone()
 basic.forever(function () {
     suivi_ligne(run_cmd)
-    basic.showNumber(RobotCar_Keyestudio.Sonar.ping())
 })
