@@ -77,28 +77,33 @@ function moteurs (sens_1_1: number, vitesse_: number) {
     }
 }
 function suivi_ligne (cmd: string) {
-    if (cmd == "on" && !(RobotCar_Keyestudio.IrSensors.isLeftBlocked() && RobotCar_Keyestudio.IrSensors.isRightBlocked())) {
-        if (pins.digitalReadPin(DigitalPin.P12) != pins.digitalReadPin(DigitalPin.P13)) {
-            if (pins.digitalReadPin(DigitalPin.P12) == 1) {
-                moteurs(1, 40)
-            } else if (pins.digitalReadPin(DigitalPin.P13) == 1) {
-                moteurs(-1, 40)
+    if (cmd == "on") {
+        if (!(RobotCar_Keyestudio.IrSensors.isLeftBlocked() && RobotCar_Keyestudio.IrSensors.isRightBlocked())) {
+            if (pins.digitalReadPin(DigitalPin.P12) != pins.digitalReadPin(DigitalPin.P13)) {
+                if (pins.digitalReadPin(DigitalPin.P12) == 1) {
+                    moteurs(1, 40)
+                } else if (pins.digitalReadPin(DigitalPin.P13) == 1) {
+                    moteurs(-1, 40)
+                }
+                phares("blue")
+                neo_LED("blue")
+            } else if (pins.digitalReadPin(DigitalPin.P12) == 0) {
+                moteurs(0, -20)
+                phares("orange")
+                neo_LED("orange")
+            } else {
+                moteurs(0, 30)
+                phares("white")
+                neo_LED("arc")
             }
-            phares("blue")
-            neo_LED("blue")
-        } else if (pins.digitalReadPin(DigitalPin.P12) == 0) {
-            moteurs(0, -20)
-            phares("orange")
-            neo_LED("orange")
         } else {
-            moteurs(0, 30)
-            phares("white")
-            neo_LED("arc")
+            RobotCar_Keyestudio.Motors.stop()
+            neo_LED("red")
+            phares("red")
         }
     } else {
         RobotCar_Keyestudio.Motors.stop()
-        neo_LED("red")
-        phares("red")
+        neopixels("arc")
     }
 }
 makerbit.onIrDatagram(function () {

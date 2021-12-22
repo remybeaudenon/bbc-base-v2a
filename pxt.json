@@ -1,5 +1,5 @@
 {
-    "name": "robot-car-v2.2",
+    "name": "robot-car-v2.3",
     "version": "2.1.0",
     "description": "",
     "dependencies": {
@@ -18,6 +18,10 @@
     "testFiles": [
         "test.ts"
     ],
+    "targetVersions": {
+        "target": "4.0.16",
+        "targetId": "microbit"
+    },
     "supportedTargets": [
         "microbit"
     ],
