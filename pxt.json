@@ -7,19 +7,20 @@
         "radio": "*",
         "microphone": "*",
         "pxt-robotcar": "github:veilkrand/pxt-robotcar#v0.0.14",
-        "MakerBit-IR-Receiver": "github:1010technologies/pxt-makerbit-ir-receiver#v1.5.3",
+        "MakerBit-IR-Receiver": "github:1010technologies/pxt-makerbit-ir-receiver#v1.5.14",
         "neopixel": "github:microsoft/pxt-neopixel#v0.7.3"
     },
     "files": [
         "main.ts",
         "README.md",
-        "main.blocks"
+        "main.blocks",
+        "main.py"
     ],
     "testFiles": [
         "test.ts"
     ],
     "targetVersions": {
-        "target": "4.0.16",
+        "target": "6.0.25",
         "targetId": "microbit"
     },
     "supportedTargets": [

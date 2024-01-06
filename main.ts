@@ -20,41 +20,41 @@ function phares (cmd: string) {
         phares_cmd = cmd
     }
 }
-function neopixels (cmd: string) {
-    if (neopixel_cmd != cmd) {
-        if (cmd == "white") {
+function neopixels (cmd2: string) {
+    if (neopixel_cmd != cmd2) {
+        if (cmd2 == "white") {
             neopixel2.showColor(neopixel.colors(NeoPixelColors.White))
-        } else if (cmd == "off") {
+        } else if (cmd2 == "off") {
             neopixel2.showColor(neopixel.colors(NeoPixelColors.Black))
-        } else if (cmd == "red") {
+        } else if (cmd2 == "red") {
             neopixel2.showColor(neopixel.colors(NeoPixelColors.Red))
-        } else if (cmd == "green") {
+        } else if (cmd2 == "green") {
             neopixel2.showColor(neopixel.colors(NeoPixelColors.Green))
-        } else if (cmd == "blue") {
+        } else if (cmd2 == "blue") {
             neopixel2.showColor(neopixel.colors(NeoPixelColors.Blue))
-        } else if (cmd == "arc") {
+        } else if (cmd2 == "arc") {
             neopixel2.showRainbow(1, 360)
-        } else if (cmd == "right") {
+        } else if (cmd2 == "right") {
             neopixel2.showColor(neopixel.colors(NeoPixelColors.Black))
             neopixel2.setPixelColor(5, neopixel.colors(NeoPixelColors.Red))
             neopixel2.setPixelColor(6, neopixel.colors(NeoPixelColors.Red))
             neopixel2.setPixelColor(7, neopixel.colors(NeoPixelColors.Red))
             neopixel2.show()
-        } else if (cmd == "left") {
+        } else if (cmd2 == "left") {
             neopixel2.showColor(neopixel.colors(NeoPixelColors.Black))
             neopixel2.setPixelColor(10, neopixel.colors(NeoPixelColors.Red))
             neopixel2.setPixelColor(11, neopixel.colors(NeoPixelColors.Red))
             neopixel2.setPixelColor(12, neopixel.colors(NeoPixelColors.Red))
             neopixel2.show()
-        } else if (cmd == "orange") {
+        } else if (cmd2 == "orange") {
             neopixel2.showColor(neopixel.colors(NeoPixelColors.Orange))
         } else {
             neopixel2.showColor(neopixel.colors(NeoPixelColors.Black))
         }
-        neopixel_cmd = cmd
+        neopixel_cmd = cmd2
     }
 }
-function neo_LED (cmd: string) {
+function neo_LED (cmd3: string) {
     if (RobotCar_Keyestudio.IrSensors.isLeftBlocked() && RobotCar_Keyestudio.IrSensors.isRightBlocked()) {
         neopixels("red")
     } else if (RobotCar_Keyestudio.IrSensors.isLeftBlocked()) {
@@ -62,7 +62,7 @@ function neo_LED (cmd: string) {
     } else if (RobotCar_Keyestudio.IrSensors.isRightBlocked()) {
         neopixels("right")
     } else {
-        neopixels(cmd)
+        neopixels(cmd3)
     }
 }
 function moteurs (sens_1_1: number, vitesse_: number) {
@@ -76,14 +76,14 @@ function moteurs (sens_1_1: number, vitesse_: number) {
         RobotCar_Keyestudio.Motors.steer(vitesse_, 275 * sens_1_1)
     }
 }
-function suivi_ligne (cmd: string) {
-    if (cmd == "on") {
+function suivi_ligne (cmd4: string) {
+    if (cmd4 == "on") {
         if (!(RobotCar_Keyestudio.IrSensors.isLeftBlocked() && RobotCar_Keyestudio.IrSensors.isRightBlocked())) {
             if (pins.digitalReadPin(DigitalPin.P12) != pins.digitalReadPin(DigitalPin.P13)) {
                 if (pins.digitalReadPin(DigitalPin.P12) == 1) {
-                    moteurs(1, 40)
+                    moteurs(1, 30)
                 } else if (pins.digitalReadPin(DigitalPin.P13) == 1) {
-                    moteurs(-1, 40)
+                    moteurs(-1, 30)
                 }
                 phares("blue")
                 neo_LED("blue")
@@ -133,7 +133,7 @@ run_cmd = "off"
 let sonar2 = RobotCar_Keyestudio.Sonar.ping()
 neopixels("arc")
 phares("off")
-music.setBuiltInSpeakerEnabled(false)
+music.setBuiltInSpeakerEnabled(true)
 soundExpression.happy.playUntilDone()
 basic.forever(function () {
     suivi_ligne(run_cmd)
