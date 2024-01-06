@@ -1,4 +1,5 @@
-function phares (cmd: string) {
+function phares(cmd: string) {
+    
     if (phares_cmd != cmd) {
         if (cmd == "white") {
             RobotCar_Keyestudio.Leds.showWhite()
@@ -15,12 +16,16 @@ function phares (cmd: string) {
         } else if (cmd == "on") {
             RobotCar_Keyestudio.Leds.showWhite()
         } else {
-        	
+            
         }
+        
         phares_cmd = cmd
     }
+    
 }
-function neopixels (cmd2: string) {
+
+function neopixels(cmd2: string) {
+    
     if (neopixel_cmd != cmd2) {
         if (cmd2 == "white") {
             neopixel2.showColor(neopixel.colors(NeoPixelColors.White))
@@ -51,10 +56,13 @@ function neopixels (cmd2: string) {
         } else {
             neopixel2.showColor(neopixel.colors(NeoPixelColors.Black))
         }
+        
         neopixel_cmd = cmd2
     }
+    
 }
-function neo_LED (cmd3: string) {
+
+function neo_LED(cmd3: string) {
     if (RobotCar_Keyestudio.IrSensors.isLeftBlocked() && RobotCar_Keyestudio.IrSensors.isRightBlocked()) {
         neopixels("red")
     } else if (RobotCar_Keyestudio.IrSensors.isLeftBlocked()) {
@@ -64,8 +72,10 @@ function neo_LED (cmd3: string) {
     } else {
         neopixels(cmd3)
     }
+    
 }
-function moteurs (sens_1_1: number, vitesse_: number) {
+
+function moteurs(sens_1_1: number, vitesse_: number) {
     if (RobotCar_Keyestudio.Sonar.ping() < 60) {
         RobotCar_Keyestudio.Motors.stop()
         music.playTone(659, music.beat(BeatFraction.Whole))
@@ -73,10 +83,13 @@ function moteurs (sens_1_1: number, vitesse_: number) {
         if (vitesse_ < 0) {
             music.playTone(262, music.beat(BeatFraction.Whole))
         }
+        
         RobotCar_Keyestudio.Motors.steer(vitesse_, 275 * sens_1_1)
     }
+    
 }
-function suivi_ligne (cmd4: string) {
+
+function suivi_ligne(cmd4: string) {
     if (cmd4 == "on") {
         if (!(RobotCar_Keyestudio.IrSensors.isLeftBlocked() && RobotCar_Keyestudio.IrSensors.isRightBlocked())) {
             if (pins.digitalReadPin(DigitalPin.P12) != pins.digitalReadPin(DigitalPin.P13)) {
@@ -85,6 +98,7 @@ function suivi_ligne (cmd4: string) {
                 } else if (pins.digitalReadPin(DigitalPin.P13) == 1) {
                     moteurs(-1, 30)
                 }
+                
                 phares("blue")
                 neo_LED("blue")
             } else if (pins.digitalReadPin(DigitalPin.P12) == 0) {
@@ -96,17 +110,22 @@ function suivi_ligne (cmd4: string) {
                 phares("white")
                 neo_LED("arc")
             }
+            
         } else {
             RobotCar_Keyestudio.Motors.stop()
             neo_LED("red")
             phares("red")
         }
+        
     } else {
         RobotCar_Keyestudio.Motors.stop()
         neopixels("arc")
     }
+    
 }
-makerbit.onIrDatagram(function () {
+
+makerbit.onIrDatagram(function on_ir_datagram() {
+    
     if (makerbit.irButton() == makerbit.irButtonCode(IrButton.Number_1)) {
         phares("on")
     } else if (makerbit.irButton() == makerbit.irButtonCode(IrButton.Number_0)) {
@@ -119,12 +138,14 @@ makerbit.onIrDatagram(function () {
         } else {
             run_cmd = "on"
         }
+        
     }
+    
 })
 let run_cmd = ""
 let phares_cmd = ""
 let neopixel_cmd = ""
-let neopixel2: neopixel.Strip = null
+let neopixel2 : neopixel.Strip = null
 makerbit.connectIrReceiver(DigitalPin.P16, IrProtocol.Keyestudio)
 neopixel2 = neopixel.create(DigitalPin.P5, 18, NeoPixelMode.RGB)
 neopixel_cmd = ""
@@ -135,6 +156,6 @@ neopixels("arc")
 phares("off")
 music.setBuiltInSpeakerEnabled(true)
 soundExpression.happy.playUntilDone()
-basic.forever(function () {
+basic.forever(function on_forever() {
     suivi_ligne(run_cmd)
 })
